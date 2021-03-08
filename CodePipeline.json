@@ -1,0 +1,110 @@
+ 
+{
+    "pipeline": {
+        "name": "scenario-01",
+        "roleArn": "arn:aws:iam::821881850845:role/AWSCodePipelineServiceRole",
+        "artifactStore": {
+            "type": "S3",
+            "location": "vls-03"
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "Source",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "provider": "CodeCommit",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "BranchName": "master",
+                            "PollForSourceChanges": "true",
+                            "RepositoryName": "vls"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "inputArtifacts": [],
+                        "region": "eu-west-2"
+                    }
+                ]
+            },
+            {
+                "name": "Beta-stage",
+                "actions": [
+                    {
+                        "name": "Beta-stage",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "ElasticBeanstalk",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ApplicationName": "vls",
+                            "EnvironmentName": "beta-env"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "region": "eu-west-2",
+                        "namespace": "DeployVariables"
+                    }
+                ]
+            },
+            {
+                "name": "DeployProduction",
+                "actions": [
+                    {
+                        "name": "PromoteToProd",
+                        "actionTypeId": {
+                            "category": "Approval",
+                            "owner": "AWS",
+                            "provider": "Manual",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "NotificationArn": "arn:aws:sns:eu-west-2:821881850845:sns"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [],
+                        "region": "eu-west-2"
+                    },
+                    {
+                        "name": "DeployProduction",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "ElasticBeanstalk",
+                            "version": "1"
+                        },
+                        "runOrder": 2,
+                        "configuration": {
+                            "ApplicationName": "vls",
+                            "EnvironmentName": "prod"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "region": "eu-west-2"
+                    }
+                ]
+            }
+        ],
+        "version": 1
+    }
+}
