@@ -1,0 +1,106 @@
+{
+    "pipeline": {
+        "roleArn": "arn:aws:iam::821881850845:role/service-role/AWSCodePipelineServiceRole-eu-west-2-awesomeness",
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "inputArtifacts": [],
+                        "name": "Source",
+                        "region": "eu-west-2",
+                        "namespace": "SourceVariables",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "version": "1",
+                            "provider": "CodeCommit"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "configuration": {
+                            "OutputArtifactFormat": "CODE_ZIP",
+                            "PollForSourceChanges": "false",
+                            "BranchName": "master",
+                            "RepositoryName": "vls"
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            },
+            {
+                "name": "Build",
+                "actions": [
+                    {
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "name": "Build",
+                        "region": "eu-west-2",
+                        "namespace": "BuildVariables",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "version": "1",
+                            "provider": "CodeBuild"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "BuildArtifact"
+                            }
+                        ],
+                        "configuration": {
+                            "ProjectName": "vls-build-project"
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            },
+            {
+                "name": "Deploy",
+                "actions": [
+                    {
+                        "inputArtifacts": [
+                            {
+                                "name": "BuildArtifact"
+                            }
+                        ],
+                        "name": "Deploy",
+                        "region": "eu-west-2",
+                        "namespace": "DeployVariables",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "version": "1",
+                            "provider": "ECS"
+                        },
+                        "outputArtifacts": [],
+                        "configuration": {
+                            "ClusterName": "angular-app",
+                            "ServiceName": "app",
+                            "DeploymentTimeout": "30",
+                            "FileName": "imagedefinitions.json"
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            }
+        ],
+        "artifactStore": {
+            "type": "S3",
+            "location": "codepipeline-eu-west-2-361176658648"
+        },
+        "name": "awesomeness",
+        "version": 1
+    },
+    "metadata": {
+        "pipelineArn": "arn:aws:codepipeline:eu-west-2:821881850845:awesomeness",
+        "updated": 1615179063.381,
+        "created": 1615179063.381
+    }
+}
