@@ -62,6 +62,29 @@
                 ]
             },
             {
+                "name": "manual-approval-stage",
+                "actions": [
+                    {
+                        "inputArtifacts": [],
+                        "name": "Manual-approval-stage",
+                        "region": "eu-west-2",
+                        "actionTypeId": {
+                            "category": "Approval",
+                            "owner": "AWS",
+                            "version": "1",
+                            "provider": "Manual"
+                        },
+                        "outputArtifacts": [],
+                        "configuration": {
+                            "NotificationArn": "arn:aws:sns:eu-west-2:821881850845:sns",
+                            "ExternalEntityLink": "http://approve",
+                            "CustomData": "Kindly give authorization to deploy to production."
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            },
+            {
                 "name": "Deploy",
                 "actions": [
                     {
@@ -96,11 +119,11 @@
             "location": "codepipeline-eu-west-2-361176658648"
         },
         "name": "awesomeness",
-        "version": 1
+        "version": 2
     },
     "metadata": {
         "pipelineArn": "arn:aws:codepipeline:eu-west-2:821881850845:awesomeness",
-        "updated": 1615179063.381,
+        "updated": 1615196216.7,
         "created": 1615179063.381
     }
 }
