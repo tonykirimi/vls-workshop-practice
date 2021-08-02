@@ -21,7 +21,7 @@
               aws elasticbeanstalk describe-environments --application-name test --region eu-west-2 --profile vls-workshop( this will help show exactly whats your solution stack.)
               aws elasticbeanstalk update-environment --solution-stack-name "64bit Amazon Linux 2018.03 v2.16.5 running Docker 19.03.13-ce" --environment-name "beta-env" --region "eu-west-2" --profile vls-workshop( this command help downgrade to amazon linux).
               Challenge faced here was dockerfile could be built by amazon linux 2.
-              
+         eb upgrade environment-name     
               
           How to save configurations to be able to replicate them to other environments incase of DR 
               eb config save (environment name) --cfg (name-you-want-to-call-your-config)
